@@ -1,0 +1,22 @@
+[project]
+name = "health-kiosk"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "accelerate>=1.11.0",
+    "dataset>=1.6.2",
+    "datasets>=4.4.1",
+    "ipykernel>=7.1.0",
+    "peft>=0.17.1",
+    "pillow>=12.0.0",
+    "protobuf>=6.33.0",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "sentencepiece>=0.2.1",
+    "torch>=2.9.0",
+    "torchvision>=0.24.0",
+    "transformers>=4.57.1",
+    "unsloth>=2025.11.1",
+]
