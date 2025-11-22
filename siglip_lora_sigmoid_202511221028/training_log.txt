@@ -1,0 +1,365 @@
+================================================================================
+SIGLIP sigmoid LEARNING USLING LoRA
+================================================================================
+
+Configuration:
+  Model: google/siglip-base-patch16-224
+  Output: siglip_lora_sigmoid_202511221028
+  Device: cuda
+  Batch size: 32
+  Learning rate: 1e-05
+  Weight decay: 0.01
+  Epochs: 15
+  Lora_rank: 32
+  Output directory: siglip_lora_sigmoid_202511221028
+
+================================================================================
+Loading Data
+================================================================================
+Total real samples in ./data/coarse_labeled_metadata_with_labels.csv: 5909
+conditions: 66
+Coarse categories: 16
+
+================================================================================
+Loading and Processing Data
+================================================================================
+Raw data loaded: 5909 samples
+
+Balancing training data (target min: 30)...
+  Added 45 samples via oversampling.
+Training set size before adding synthetic data: 4147
+Loaded metadata for 1354 existing synthetic samples.
+Checking 32 rare classes (Target: 30)...
+No new images generated.
+New training set size after adding synthetic data: 5501
+================================================================================
+ DATASET ANALYSIS FOR SIGLIP FINE-TUNING
+================================================================================
+
+1. OVERALL DATASET STATISTICS
+--------------------------------------------------------------------------------
+Total samples: 5,909
+  - Training:   5,501 (93.1%)
+  - Validation: 910 (15.4%)
+  - Test:       897 (15.2%)
+
+Unique conditions: 66
+Unique coarse categories: 16
+
+2. LABEL DISTRIBUTION BY SPLIT
+--------------------------------------------------------------------------------
+
+Top 15 Most Common Conditions:
+Condition                                   Train      Val     Test    Total
+--------------------------------------------------------------------------------
+Eczema                                        751      162      166     1079
+Allergic Contact Dermatitis                   391      104       95      590
+Urticaria                                     310       66       66      442
+Insect Bite                                   280       61       60      401
+Folliculitis                                  216       45       45      306
+Psoriasis                                     173       31       30      234
+Tinea                                         149       31       31      211
+Impetigo                                       97       18       21      136
+Herpes Zoster                                  92       19       19      130
+Drug Rash                                      92       20       17      129
+Pigmented purpuric eruption                    88       21       19      128
+Acne                                           71       26       26      123
+Herpes Simplex                                 77       12       20      109
+CD - Contact dermatitis                        69       14       15       98
+Acute dermatitis, NOS                          62       14       17       93
+
+3. POTENTIAL TRAINING ISSUES
+--------------------------------------------------------------------------------
+
+⚠️  Conditions with <10 total samples: 0
+
+⚠️  Conditions missing from validation set: 6
+  - Melasma
+  - Petechiae
+  - Pityriasis rubra pilaris
+  - Hyperpigmentation
+  - Bullous Pemphigoid
+  - Melanoma
+
+⚠️  Conditions missing from test set: 6
+  - Vitiligo
+  - Melasma
+  - Petechiae
+  - Pityriasis rubra pilaris
+  - Hyperpigmentation
+  - SCC/SCCIS
+
+4. MULTI-LABEL ANALYSIS
+--------------------------------------------------------------------------------
+Labels per Image          Train        Val       Test
+--------------------------------------------------------------------------------
+1 label(s):       2160        177        191
+2 label(s):       1007        215        208
+3 label(s):       1485        325        310
+4 label(s):        253         55         57
+5 label(s):        204         45         46
+6 label(s):        211         49         50
+7 label(s):        113         32         18
+8 label(s):         47         11         15
+9 label(s):         21          1          2
+
+Multi-label samples in training: 3,341 (60.7%)
+
+5. COARSE CATEGORY DISTRIBUTION
+--------------------------------------------------------------------------------
+Category                                    Train      Val     Test    Total
+--------------------------------------------------------------------------------
+Acne/Follicular                               202       55       62      319
+Autoimmune/Lichenoid                          121       25       22      168
+Bacterial Infections                          379       85       83      547
+Benign Tumors                                  51       10        9       70
+Bullous Disorders                               5        0        1        6
+Fungal Infections                             201       40       42      283
+Inflammatory Dermatitis                      1535      345      338     2218
+Parasitic/Insect                              310       66       69      445
+Pigmentary Disorders                           24        4        1       29
+Pruritic Conditions                            33       12        9       54
+Psoriatic Conditions                          237       46       46      329
+Skin Cancer                                   121        9        7      137
+Trauma/Wounds                                  77       21       20      118
+Urticaria/Allergic                            447      100       91      638
+Vascular Disorders                            193       41       40      274
+Viral Infections                              263       51       57      371
+
+6. CLASS IMBALANCE METRICS
+--------------------------------------------------------------------------------
+Training set class imbalance:
+  - Most common class:  Eczema                                   (751 samples)
+  - Least common class: Lichen planus lichenoid eruption         (3 samples)
+  - Imbalance ratio:    250.3:1
+
+Median samples per class: 51
+Mean samples per class:   79.7
+
+7. RECOMMENDATIONS FOR SIGLIP FINE-TUNING
+================================================================================
+
+📊 Data Considerations:
+  ⚠️  SEVERE class imbalance detected (>100:1)
+     → Consider: class weights, focal loss, or oversampling rare classes
+
+  ℹ️  High multi-label percentage (60.7%)
+     → Use SIGMOID loss (not contrastive) for multi-label classification
+
+================================================================================
+
+================================================================================
+Loading Model and Creating Datasets
+================================================================================
+✓ Model loaded with 204,337,156 parameters
+✓ Datasets created
+  Train: 5501 samples
+  Val: 910 samples
+  Test: 897 samples
+
+Sample fine-grained texts:
+  [Urticaria] Skin lesion consistent with Urticaria...
+  [Tinea] Dermatoscopy image showing Tinea...
+  [Viral Exanthem] Skin condition diagnosed as Viral Exanthem...
+
+Applying LoRA fine-tuning...
+✅ ICD Map and Matrix loaded successfully.
+
+================================================================================
+ICD MAP INTEGRITY CHECK
+================================================================================
+
+--- ICD MAP INTEGRITY CHECK ---
+✅ Map Size: 66 conditions.
+---------------------------------
+Sample Keys (First 25 for detailed verification):
+  [ 0 | Index 0] Key: 'Abrasion, scrape, or scab' (Raw: 'Abrasion, scrape, or scab')
+  [ 1 | Index 1] Key: 'Abscess' (Raw: 'Abscess')
+  [ 2 | Index 2] Key: 'Acne' (Raw: 'Acne')
+  [ 3 | Index 3] Key: 'Actinic Keratosis' (Raw: 'Actinic Keratosis')
+  [ 4 | Index 4] Key: 'Acute and chronic dermatitis' (Raw: 'Acute and chronic dermatitis')
+  [ 5 | Index 5] Key: 'Acute dermatitis, NOS' (Raw: 'Acute dermatitis, NOS')
+  [ 6 | Index 6] Key: 'Allergic Contact Dermatitis' (Raw: 'Allergic Contact Dermatitis')
+  [ 7 | Index 7] Key: 'Basal Cell Carcinoma' (Raw: 'Basal Cell Carcinoma')
+  [ 8 | Index 8] Key: 'Bullous Pemphigoid' (Raw: 'Bullous Pemphigoid')
+  [ 9 | Index 9] Key: 'CD - Contact dermatitis' (Raw: 'CD - Contact dermatitis')
+  [10 | Index 10] Key: 'Cellulitis' (Raw: 'Cellulitis')
+  [11 | Index 11] Key: 'Chronic dermatitis, NOS' (Raw: 'Chronic dermatitis, NOS')
+  [12 | Index 12] Key: 'Cutaneous lupus' (Raw: 'Cutaneous lupus')
+  [13 | Index 13] Key: 'Dermatofibroma' (Raw: 'Dermatofibroma')
+  [14 | Index 14] Key: 'Drug Rash' (Raw: 'Drug Rash')
+  [15 | Index 15] Key: 'Ecthyma' (Raw: 'Ecthyma')
+  [16 | Index 16] Key: 'Eczema' (Raw: 'Eczema')
+  [17 | Index 17] Key: 'Erythema multiforme' (Raw: 'Erythema multiforme')
+  [18 | Index 18] Key: 'Folliculitis' (Raw: 'Folliculitis')
+  [19 | Index 19] Key: 'Granuloma annulare' (Raw: 'Granuloma annulare')
+  [20 | Index 20] Key: 'Herpes Simplex' (Raw: 'Herpes Simplex')
+  [21 | Index 21] Key: 'Herpes Zoster' (Raw: 'Herpes Zoster')
+  [22 | Index 22] Key: 'Hyperpigmentation' (Raw: 'Hyperpigmentation')
+  [23 | Index 23] Key: 'Hypersensitivity' (Raw: 'Hypersensitivity')
+  [24 | Index 24] Key: 'Impetigo' (Raw: 'Impetigo')
+
+--- Failing Input Check ---
+Input Check: 'Eczema' in map? True
+
+================================================================================
+STARTING FINE-GRAINED TRAINING
+================================================================================
+Training with fine-grained condition labels...
+Focus on discriminating between 66 specific conditions
+
+[SCHEDULE] step=0 | alpha=0.0000 beta=0.0000 gamma=0.0000
+[Step 0] L_total=0.705592 | L_siglip=0.705592 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=100 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 100] L_total=0.600375 | L_siglip=0.600375 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=200 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 200] L_total=0.402366 | L_siglip=0.402366 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=300 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 300] L_total=0.378495 | L_siglip=0.378495 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=400 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 400] L_total=0.372511 | L_siglip=0.372511 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=500 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 500] L_total=0.370727 | L_siglip=0.370727 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=600 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 600] L_total=0.369477 | L_siglip=0.369477 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=700 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 700] L_total=0.369756 | L_siglip=0.369756 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=800 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 800] L_total=0.369466 | L_siglip=0.369466 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=900 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 900] L_total=0.368779 | L_siglip=0.368779 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1000 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1000] L_total=0.370172 | L_siglip=0.370172 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1100 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1100] L_total=0.369934 | L_siglip=0.369934 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1200 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1200] L_total=0.369118 | L_siglip=0.369118 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1300 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1300] L_total=0.370719 | L_siglip=0.370719 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1400 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1400] L_total=0.369442 | L_siglip=0.369442 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1500 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1500] L_total=0.369282 | L_siglip=0.369282 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1600 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1600] L_total=0.371023 | L_siglip=0.371023 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1700 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1700] L_total=0.369365 | L_siglip=0.369365 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1800 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1800] L_total=0.368625 | L_siglip=0.368625 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=1900 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 1900] L_total=0.370461 | L_siglip=0.370461 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=2000 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 2000] L_total=0.370178 | L_siglip=0.370178 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=2100 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 2100] L_total=0.369583 | L_siglip=0.369583 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=2200 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 2200] L_total=0.369803 | L_siglip=0.369803 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=2300 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 2300] L_total=0.369598 | L_siglip=0.369598 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=2400 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 2400] L_total=0.369156 | L_siglip=0.369156 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+[SCHEDULE] step=2500 | alpha=0.0500 beta=1.0000 gamma=1.0000
+[Step 2500] L_total=0.368942 | L_siglip=0.368942 | L_icd=0.000000 | L_mmd=0.000000 | L_hardneg=0.000000 | alpha=0.0000, beta=0.0000, gamma=0.0000
+
+✓ Training complete! Final loss: 0.3867
+Test Loss: 0.2620
+✓ Test loss: 0.2620
+✓ Model saved to: siglip_lora_sigmoid_202511221028/final_model
+
+================================================================================
+Testing Fine-Grained Retrieval
+================================================================================
+Testing retrieval on 20 samples for R@5 accuracy...
+
+================================================================================
+DEBUG SAMPLE 1 | Condition: Psoriasis
+Image Path: /home/agentic-health/data/scin/images/-4241920756193111728.png
+Result (R@5): ❌ INCORRECT
+TRUE LABEL RANK: 9th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.2555] A dermatological image of Actinic Keratosis: Skin condition diagnosed as Actinic Keratosis 
+  [0.2268] A dermatological image of Perioral Dermatitis: Skin condition diagnosed as Perioral Dermatitis 
+  [0.2220] A dermatological image of Granuloma annulare: Skin condition diagnosed as Granuloma annulare 
+  [0.2143] A dermatological image of Scabies: A dermatological image showing Scabies 
+  [0.2044] A dermatological image of Scar Condition: Medical photograph of Scar Condition 
+  ...
+  [0.2024] A dermatological image of Psoriasis: Patient presenting with Psoriasis 👈 TRUE LABEL (Actual Rank: 9th)
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 2 | Condition: Pityriasis rosea
+Image Path: /home/agentic-health/data/scin/images/6297023132503235706.png
+Result (R@5): ❌ INCORRECT
+TRUE LABEL RANK: 7th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.2596] A dermatological image of Ecthyma: Medical photograph of Ecthyma 
+  [0.2497] A dermatological image of Herpes Zoster: Medical photograph of Herpes Zoster 
+  [0.2493] A dermatological image of Granuloma annulare: A dermatological image showing Granuloma annulare 
+  [0.2459] A dermatological image of Erythema multiforme: Dermatoscopy image showing Erythema multiforme 
+  [0.2438] A dermatological image of Allergic Contact Dermatitis: A dermatological image showing Allergic Conta... 
+  ...
+  [0.2364] A dermatological image of Pityriasis rosea: Skin lesion consistent with Pityriasis rosea 👈 TRUE LABEL (Actual Rank: 7th)
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 3 | Condition: Allergic Contact Dermatitis
+Image Path: /home/agentic-health/data/scin/images/-3221416279462754613.png
+Result (R@5): ✅ CORRECT
+TRUE LABEL RANK: 3th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.2404] A dermatological image of Lichen planus/lichenoid eruption: Medical photograph of Lichen planus/lich... 
+  [0.2403] A dermatological image of Erythema multiforme: A dermatological image showing Erythema multiforme 
+  [0.2249] A dermatological image of Allergic Contact Dermatitis: Clinical presentation of Allergic Contact Der... 👈 TRUE LABEL
+  [0.2161] A dermatological image of Cutaneous lupus: Skin lesion consistent with Cutaneous lupus 
+  [0.2037] A dermatological image of Tinea: Medical photograph of Tinea 
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 4 | Condition: Urticaria
+Image Path: /home/agentic-health/data/scin/images/-8019240739148978384.png
+Result (R@5): ❌ INCORRECT
+TRUE LABEL RANK: 8th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.2608] A dermatological image of CD - Contact dermatitis: A dermatological image showing CD - Contact derma... 
+  [0.2422] A dermatological image of Abrasion, scrape, or scab: A dermatological image showing Abrasion, scrape... 
+  [0.2295] A dermatological image of Leukocytoclastic Vasculitis: Patient presenting with Leukocytoclastic Vasc... 
+  [0.2246] A dermatological image of Acute and chronic dermatitis: Dermatoscopy image showing Acute and chronic... 
+  [0.2195] A dermatological image of Acute dermatitis, NOS: Skin lesion consistent with Acute dermatitis, NOS 
+  ...
+  [0.2055] A dermatological image of Urticaria: Skin condition diagnosed as Urticaria 👈 TRUE LABEL (Actual Rank: 8th)
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 5 | Condition: Insect Bite
+Image Path: /home/agentic-health/data/scin/images/-1844222098674246997.png
+Result (R@5): ❌ INCORRECT
+TRUE LABEL RANK: 10th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.2566] A dermatological image of Kaposi's sarcoma of skin: A dermatological image showing Kaposi's sarcoma ... 
+  [0.2407] A dermatological image of Erythema multiforme: A dermatological image showing Erythema multiforme 
+  [0.2380] A dermatological image of Irritant Contact Dermatitis: Clinical presentation of Irritant Contact Der... 
+  [0.2366] A dermatological image of Abrasion, scrape, or scab: A dermatological image showing Abrasion, scrape... 
+  [0.2365] A dermatological image of Leukocytoclastic Vasculitis: Skin lesion consistent with Leukocytoclastic ... 
+  ...
+  [0.2067] A dermatological image of Insect Bite: Patient presenting with Insect Bite 👈 TRUE LABEL (Actual Rank: 10th)
+================================================================================
+
+
+✓ Fine-grained retrieval accuracy (R@5): 30.00%
+
+================================================================================
+FINE-GRAINED TRAINING COMPLETE
+================================================================================
+
+Final metrics:
+  Test loss: 0.2620
+  Retrieval accuracy: 30.00%
