@@ -1,0 +1,286 @@
+================================================================================
+SIGLIP sigmoid LEARNING USLING LoRA
+================================================================================
+
+Configuration:
+  Model: google/siglip-base-patch16-224
+  Output: siglip_sigmoid_sigmoid_202511201425
+  Device: cuda
+  Batch size: 32
+  Learning rate: 1e-05
+  Weight decay: 0.01
+  Epochs: 15
+  Lora_rank: 32
+  Output directory: siglip_sigmoid_sigmoid_202511201425
+
+================================================================================
+Loading Data
+================================================================================
+Total real samples in ./data/coarse_labeled_metadata_with_labels.csv: 5909
+conditions: 66
+Coarse categories: 16
+
+================================================================================
+Loading and Processing Data
+================================================================================
+Raw data loaded: 5909 samples
+
+Balancing training data (target min: 30)...
+  Added 45 samples via oversampling.
+Training set size before adding synthetic data: 4150
+Loaded metadata for 1352 existing synthetic samples.
+Checking 32 rare classes (Target: 30)...
+No new images generated.
+New training set size after adding synthetic data: 5502
+================================================================================
+ DATASET ANALYSIS FOR SIGLIP FINE-TUNING
+================================================================================
+
+1. OVERALL DATASET STATISTICS
+--------------------------------------------------------------------------------
+Total samples: 5,909
+  - Training:   5,502 (93.1%)
+  - Validation: 906 (15.3%)
+  - Test:       898 (15.2%)
+
+Unique conditions: 66
+Unique coarse categories: 16
+
+2. LABEL DISTRIBUTION BY SPLIT
+--------------------------------------------------------------------------------
+
+Top 15 Most Common Conditions:
+Condition                                   Train      Val     Test    Total
+--------------------------------------------------------------------------------
+Eczema                                        760      163      156     1079
+Allergic Contact Dermatitis                   397       94       99      590
+Urticaria                                     310       66       66      442
+Insect Bite                                   281       59       61      401
+Folliculitis                                  216       45       45      306
+Psoriasis                                     165       41       28      234
+Tinea                                         149       31       31      211
+Impetigo                                       92       21       23      136
+Herpes Zoster                                  92       19       19      130
+Drug Rash                                      94       21       14      129
+Pigmented purpuric eruption                    78       24       26      128
+Acne                                           87       18       18      123
+Herpes Simplex                                 75       17       17      109
+CD - Contact dermatitis                        70       14       14       98
+Acute dermatitis, NOS                          65       15       13       93
+
+3. POTENTIAL TRAINING ISSUES
+--------------------------------------------------------------------------------
+
+⚠️  Conditions with <10 total samples: 0
+
+⚠️  Conditions missing from validation set: 3
+  - Petechiae
+  - Hyperpigmentation
+  - Melanoma
+
+⚠️  Conditions missing from test set: 5
+  - Dermatofibroma
+  - Pityriasis rubra pilaris
+  - Hyperpigmentation
+  - Bullous Pemphigoid
+  - Melanoma
+
+4. MULTI-LABEL ANALYSIS
+--------------------------------------------------------------------------------
+Labels per Image          Train        Val       Test
+--------------------------------------------------------------------------------
+1 label(s):       2146        195        186
+2 label(s):        983        231        218
+3 label(s):       1485        321        311
+4 label(s):        270         42         53
+5 label(s):        211         46         38
+6 label(s):        232         36         42
+7 label(s):        116         18         29
+8 label(s):         48          9         16
+9 label(s):         11          8          5
+
+Multi-label samples in training: 3,356 (61.0%)
+
+5. COARSE CATEGORY DISTRIBUTION
+--------------------------------------------------------------------------------
+Category                                    Train      Val     Test    Total
+--------------------------------------------------------------------------------
+Acne/Follicular                               219       49       51      319
+Autoimmune/Lichenoid                          124       21       23      168
+Bacterial Infections                          384       77       86      547
+Benign Tumors                                  50       12        8       70
+Bullous Disorders                               4        2        0        6
+Fungal Infections                             201       41       41      283
+Inflammatory Dermatitis                      1552      337      329     2218
+Parasitic/Insect                              309       66       70      445
+Pigmentary Disorders                           20        5        4       29
+Pruritic Conditions                            35        9       10       54
+Psoriatic Conditions                          225       59       45      329
+Skin Cancer                                   118        8        9      135
+Trauma/Wounds                                  73       22       23      118
+Urticaria/Allergic                            450       95       93      638
+Vascular Disorders                            178       45       51      274
+Viral Infections                              258       58       55      371
+
+6. CLASS IMBALANCE METRICS
+--------------------------------------------------------------------------------
+Training set class imbalance:
+  - Most common class:  Eczema                                   (760 samples)
+  - Least common class: Lichen planus lichenoid eruption         (3 samples)
+  - Imbalance ratio:    253.3:1
+
+Median samples per class: 51
+Mean samples per class:   79.7
+
+7. RECOMMENDATIONS FOR SIGLIP FINE-TUNING
+================================================================================
+
+📊 Data Considerations:
+  ⚠️  SEVERE class imbalance detected (>100:1)
+     → Consider: class weights, focal loss, or oversampling rare classes
+
+  ℹ️  High multi-label percentage (61.0%)
+     → Use SIGMOID loss (not contrastive) for multi-label classification
+
+================================================================================
+
+================================================================================
+Loading Model and Creating Datasets
+================================================================================
+✓ Model loaded with 203,155,972 parameters
+[train] Loaded 66 visual descriptions.
+[val] Loaded 66 visual descriptions.
+[test] Loaded 66 visual descriptions.
+✓ Datasets created
+  Train: 5502 samples
+  Val: 906 samples
+  Test: 898 samples
+
+Sample fine-grained texts:
+  [Psoriasis] Skin condition diagnosed as Psoriasis...
+  [Lichen Simplex Chronicus] A dermatological image showing Lichen Simplex Chronicus...
+  [CD - Contact dermatitis] Clinical presentation of CD - Contact dermatitis...
+
+Applying LoRA fine-tuning...
+
+================================================================================
+STARTING FINE-GRAINED TRAINING
+================================================================================
+Training with fine-grained condition labels...
+Focus on discriminating between 66 specific conditions
+
+
+✓ Training complete! Final loss: 1.1298
+✓ Test loss: 1.3148
+✓ Model saved to: siglip_sigmoid_sigmoid_202511201425/final_model
+
+================================================================================
+Testing Fine-Grained Retrieval
+================================================================================
+Testing retrieval on 20 samples for R@5 accuracy...
+
+
+ [2408/2580 30:46 < 02:12, 1.30 it/s, Epoch 14/15]
+Epoch	Training Loss	Validation Loss
+1	1.319300	1.332598
+2	1.205600	1.328605
+3	1.160400	1.323914
+4	1.139300	1.312468
+5	1.124900	1.310327
+6	1.116900	1.311729
+7	1.109500	1.308014
+8	1.094800	1.308471
+9	1.094100	1.306948
+10	1.092500	1.309067
+11	1.085300	1.307399
+12	1.086600	1.308670
+13	1.084700	1.307540
+14	1.087600	1.307630
+
+
+================================================================================
+DEBUG SAMPLE 1 | Condition: Acne
+Image Path: /home/agentic-health/data/scin/images/-461109342342893159.png
+Result (R@5): ✅ CORRECT
+TRUE LABEL RANK: 1th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.5158] A dermatological image of Acne: Patient presenting with Acne 👈 TRUE LABEL
+  [0.4954] A dermatological image of Scar Condition: Patient presenting with Scar Condition 
+  [0.4940] A dermatological image of Miliaria: Patient presenting with Miliaria 
+  [0.4790] A dermatological image of Inflicted skin lesions: Medical photograph of Inflicted skin lesions 
+  [0.4765] A dermatological image of Lichen planus/lichenoid eruption: A dermatological image showing Lichen pl... 
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 2 | Condition: Urticaria
+Image Path: /home/agentic-health/data/scin/images/514978455832830064.png
+Result (R@5): ✅ CORRECT
+TRUE LABEL RANK: 1th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.5565] A dermatological image of Urticaria: Clinical presentation of Urticaria 👈 TRUE LABEL
+  [0.5068] A dermatological image of Actinic Keratosis: Clinical presentation of Actinic Keratosis 
+  [0.5024] A dermatological image of Allergic Contact Dermatitis: Patient presenting with Allergic Contact Derm... 
+  [0.4998] A dermatological image of Stasis Dermatitis: A dermatological image showing Stasis Dermatitis 
+  [0.4975] A dermatological image of Irritant Contact Dermatitis: Dermatoscopy image showing Irritant Contact D... 
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 3 | Condition: Allergic Contact Dermatitis
+Image Path: /home/agentic-health/data/scin/images/3177770278696143993.png
+Result (R@5): ✅ CORRECT
+TRUE LABEL RANK: 1th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.4884] A dermatological image of Allergic Contact Dermatitis: Clinical presentation of Allergic Contact Der... 👈 TRUE LABEL
+  [0.4823] A dermatological image of Abrasion, scrape, or scab: Patient presenting with Abrasion, scrape, or sc... 
+  [0.4769] A dermatological image of Kaposi's sarcoma of skin: Skin lesion consistent with Kaposi's sarcoma of ... 
+  [0.4700] A dermatological image of Rosacea: Dermatoscopy image showing Rosacea 
+  [0.4533] A dermatological image of Superficial wound of body region: Medical photograph of Superficial wound ... 
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 4 | Condition: Pityriasis rosea
+Image Path: /home/agentic-health/data/scin/images/-2305436993892111732.png
+Result (R@5): ❌ INCORRECT
+TRUE LABEL RANK: 7th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.5055] A dermatological image of Chronic dermatitis, NOS: Patient presenting with Chronic dermatitis, NOS 
+  [0.5048] A dermatological image of Leukocytoclastic Vasculitis: Medical photograph of Leukocytoclastic Vascul... 
+  [0.5037] A dermatological image of Erythema multiforme: Skin condition diagnosed as Erythema multiforme 
+  [0.4984] A dermatological image of Cutaneous lupus: Clinical presentation of Cutaneous lupus 
+  [0.4947] A dermatological image of Urticaria: Patient presenting with Urticaria 
+  ...
+  [0.4657] A dermatological image of Pityriasis rosea: Patient presenting with Pityriasis rosea 👈 TRUE LABEL (Actual Rank: 7th)
+================================================================================
+
+
+================================================================================
+DEBUG SAMPLE 5 | Condition: Eczema
+Image Path: /home/agentic-health/data/scin/images/1729541313098155924.png
+Result (R@5): ✅ CORRECT
+TRUE LABEL RANK: 5th
+----------------------------------------
+Model's Top 5 Guesses:
+  [0.4913] A dermatological image of Chronic dermatitis, NOS: Skin condition diagnosed as Chronic dermatitis, N... 
+  [0.4881] A dermatological image of Acute and chronic dermatitis: A dermatological image showing Acute and chr... 
+  [0.4866] A dermatological image of Molluscum Contagiosum: Skin condition diagnosed as Molluscum Contagiosum 
+  [0.4745] A dermatological image of Verruca vulgaris: Patient presenting with Verruca vulgaris 
+  [0.4669] A dermatological image of Eczema: Clinical presentation of Eczema 👈 TRUE LABEL
+================================================================================
+
+
+✓ Fine-grained retrieval accuracy (R@5): 75.00%
+
+================================================================================
+FINE-GRAINED TRAINING COMPLETE
+================================================================================
+
+Final metrics:
+  Test loss: 1.3148
+  Retrieval accuracy: 75.00%
